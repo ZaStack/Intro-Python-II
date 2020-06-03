@@ -1,9 +1,7 @@
 from room import Room
 from player import Player
 import textwrap
-import cmd
 import sys
-import os
 
 
 # Declare all the rooms
@@ -65,27 +63,26 @@ room_solved = {
 # Write a loop that:
 #
 # * Prints the current room name
-def print_location():
-    print('\n' + ('#' * (4 +len(player1.position))))
-    print('# ' + player1.position.upper() + ' #')
-    print('#' * (4 +len(player1.position)))
-    print('\n' + (room[player1.position]))
+print(f'Welcome {player1.name}')
+print(f'You are in {player1.position}')
+print('###You can go N, S, E, or W.###')
+print('###############################')
+print('##Where would you like to go?##')
 
-def prompt():
-	print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~")
-	print("Where would you like to go?")
-	action = input("> ")
-	acceptable_actions = ['move', 'go', 'travel', 'walk', 'quit', 'q']
-	while action.lower() not in acceptable_actions:
-		print("Unknown action command, please try again.\n")
-		action = input("> ")
-	if action.lower() == quitgame:
-		sys.exit()
-	elif action.lower() in ['move', 'go', 'travel', 'walk']:
-		move(action.lower())
-
-def move(myAction):
-    ask
+while True:
+    choice = input('> ')
+    player_choice = choice.lower()
+    if len(player_choice) == 1:
+        if choice == 'q':
+            print(f'Fine then, nobody likes you anyway, {player1.name}')
+            sys.exit()
+        elif choice == 'n' or choice == 's' or choice == 'e' or choice == 'w':
+            player1.move(choice)
+            print(f'You are now in {player1.position}')
+        else:
+            print('Need a proper command')
+    else:
+        print('Need a proper command')
 #  * Prints the current description (the textwrap module might be useful here).
 # * Waits for user input and decides what to do.
 while player1.won is False:
