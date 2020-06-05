@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 import textwrap
 import sys
 
@@ -32,6 +33,20 @@ earlier adventurers. The only exit is to the south.""",
     ),
 }
 
+item = {
+    "torch": Item("Torch", "To light your way"),
+    "sword": Item("Sword", "Stick em with the pointy end"),
+    "shield": Item("Shield", "So they don't stick you with the pointy end"),
+    "pouch": Item("Pouch", "For carrying your shit"),
+    "skooma": Item("Skooma", "Because why not?"),
+}
+
+room["outside"].items.append(item["torch"])
+room["foyer"].items.append(item["sword"])
+room["foyer"].items.append(item["shield"])
+room["overlook"].items.append(item["skooma"])
+room["narrow"].items.append(item["pouch"])
+
 
 # Link rooms together
 
@@ -49,44 +64,56 @@ room["treasure"].s_to = room["narrow"]
 #
 
 # Make a new player object that is currently in the 'outside' room.
-player1 = Player(name = 'Zach', position = room['outside'])
-solved = False
-quitgame = 'quit', 'q'
-room_solved = {
-    "outside": False,
-    "foyer": False,
-    "overlook": False,
-    "narrow": False,
-    "treasure": False,
-}
+player1 = Player(name="Zach", position=room["outside"])
+
 
 # Write a loop that:
 #
 # * Prints the current room name
-print(f'Welcome {player1.name}')
-print(f'You are in {player1.position}')
-print('###You can go N, S, E, or W.###')
-print('###############################')
-print('##Where would you like to go?##')
+print(f"##########Welcome {player1.name}#########")
+print("#" * 31)
+print(f"You are in {player1.position}")
+player1.position.inspect_room()
+print("#" * 31)
+print(
+    "## You can go N, S, E, or W. You can also take and drop items, or type inventory. ##"
+)
+print("###############################")
+print("# What would you like to do? #")
 
 while True:
-    choice = input('> ')
-    player_choice = choice.lower()
-    if len(player_choice) == 1:
-        if choice == 'q':
-            print(f'Fine then, nobody likes you anyway, {player1.name}')
+    choice = input("> ")
+    player_choice = choice.lower().split(" ")
+    if len(player_choice) is 1:
+        if choice is "q":
+            print(f"Fine then, nobody likes you anyway, {player1.name}")
             sys.exit()
-        elif choice == 'n' or choice == 's' or choice == 'e' or choice == 'w':
+        elif choice is "n" or choice is "s" or choice is "e" or choice is "w":
             player1.move(choice)
-            print(f'You are now in {player1.position}')
+            print(f"You are now in {player1.position}")
+            player1.position.inspect_room()
+        elif choice is "i":
+            player1.check_inv()
         else:
-            print('Need a proper command')
+            print("Need a proper command")
+
+    elif len(player_choice) is 2:
+        if player_choice[0] in ["take", "get", "pickup"]:
+            if item[player_choice[1]]:
+                player1.get_item(item[player_choice[1]])
+            else:
+                print("That isn't something you see in here")
+        elif player_choice[0] == "drop":
+            if item[player_choice[1]]:
+                player1.drop_item(item[player_choice[1]])
+                print("Hey, I think you dropped something")
+                player1.check_inv()
+            else:
+                print("That isn't something you have on you")
     else:
-        print('Need a proper command')
+        print("Need a proper command")
 #  * Prints the current description (the textwrap module might be useful here).
 # * Waits for user input and decides what to do.
-while player1.won is False:
-    move = input("Enter a direction or q to quit")
 # If the user enters a cardinal direction, attempt to move to the room there.
 # Print an error message if the movement isn't allowed.
 #

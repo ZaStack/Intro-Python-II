@@ -8,6 +8,14 @@ class Room:
         self.s_to = None
         self.e_to = None
         self.w_to = None
+        self.items = []
+
+    def inspect_room(self):
+        if len(self.items) is 0:
+            print('There is nothing useful here.')
+        else:
+            for item in self.items:
+                print(f'You see {item.name}. {item.description}')
 
     def __str__(self):
         return f'{self.room_name}, {self.description}'
